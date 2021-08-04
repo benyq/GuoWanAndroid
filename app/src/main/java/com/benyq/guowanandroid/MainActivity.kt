@@ -14,6 +14,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowCompat
 import com.benyq.guowanandroid.ui.page.AppTopBar
 import com.benyq.guowanandroid.ui.page.MainPage
+import com.benyq.guowanandroid.ui.page.MePage
+import com.benyq.guowanandroid.ui.page.MineClickAction
 import com.benyq.guowanandroid.ui.theme.GuoWanAndroidTheme
 
 class MainActivity : ComponentActivity() {
@@ -24,8 +26,7 @@ class MainActivity : ComponentActivity() {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
                     Column(modifier = Modifier.fillMaxSize()) {
-                        AppTopBar(title = "main")
-                        MainPage()
+                        MePage(clickAction = MineClickAction())
                     }
                 }
             }
