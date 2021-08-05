@@ -30,7 +30,7 @@ import com.benyq.guowanandroid.model.vm.LoginViewModel
  */
 
 @Composable
-fun LoginPage(viewModel: LoginViewModel = viewModel()) {
+fun LoginPage(backAction: ()->Unit, viewModel: LoginViewModel = viewModel()) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -40,7 +40,9 @@ fun LoginPage(viewModel: LoginViewModel = viewModel()) {
         Icon(
             painter = painterResource(R.drawable.ic_close),
             contentDescription = null,
-            modifier = Modifier.size(30.dp)
+            modifier = Modifier.size(30.dp).clickable {
+                backAction()
+            }
         )
         Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
             Text(
@@ -74,15 +76,17 @@ fun LoginPage(viewModel: LoginViewModel = viewModel()) {
                     Text("请输入账号")
                 },
                 trailingIcon = {
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_delete),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(20.dp)
-                            .clickable {
-                                username = ""
-                            }
-                    )
+                    if (username.isNotEmpty()) {
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_delete),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(20.dp)
+                                .clickable {
+                                    username = ""
+                                }
+                        )
+                    }
                 },
                 colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.White, focusedIndicatorColor = Color.LightGray)
             )
@@ -144,5 +148,5 @@ fun LoginPage(viewModel: LoginViewModel = viewModel()) {
 @Composable
 @Preview()
 fun ShowLoginPage() {
-    LoginPage()
+    LoginPage({})
 }

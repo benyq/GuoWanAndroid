@@ -2,6 +2,9 @@ package com.benyq.guowanandroid.login
 
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.Scaffold
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.benyq.guowanandroid.base.BaseActivity
 import com.benyq.guowanandroid.model.vm.LoginViewModel
@@ -16,11 +19,14 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
         setContent {
             val systemUiController = rememberSystemUiController()
             systemUiController.setStatusBarColor(Color.White)
-            LoginPage()
+            Scaffold(modifier = Modifier.fillMaxSize()) {
+                LoginPage({
+                    finish()
+                })
+            }
         }
-
         viewModel.loginResult.observe(this) {
-            Logger.d(it)
+            finish()
         }
     }
 }

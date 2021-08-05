@@ -11,6 +11,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -21,6 +23,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.MutableLiveData
 import com.benyq.guowanandroid.R
 import com.benyq.guowanandroid.model.UserData
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
@@ -37,10 +40,12 @@ data class MineClickAction(
 
 
 @Composable
-fun MePage(userData: UserData? = null, clickAction: MineClickAction) {
+fun MePage(userLiveData: MutableLiveData<UserData>, clickAction: MineClickAction) {
 
     val systemUiController = rememberSystemUiController()
     systemUiController.setStatusBarColor(Color(0xFF36C1BC))
+    val userData by userLiveData.observeAsState()
+
     Column(modifier = Modifier.fillMaxSize()) {
         Box(
             modifier = Modifier
@@ -75,14 +80,13 @@ fun MePage(userData: UserData? = null, clickAction: MineClickAction) {
                         .size(60.dp)
 
                 )
-
-                if (userData != null) {
+                userData?.let {
                     Column(modifier = Modifier.padding(10.dp)) {
-                        Text(text = userData.username, fontSize = 16.sp, color = Color.White)
+                        Text(text = it.username, fontSize = 16.sp, color = Color.White)
                         Row() {
-                            Text(text = "ID: ${userData.id}", fontSize = 12.sp, color = Color.White)
+                            Text(text = "ID: ${it.id}", fontSize = 12.sp, color = Color.White)
                             Text(
-                                text = "lv: ${userData.level}",
+                                text = "lv: ${it.level}",
                                 fontSize = 12.sp,
                                 color = Color.White,
                                 modifier = Modifier
@@ -96,8 +100,7 @@ fun MePage(userData: UserData? = null, clickAction: MineClickAction) {
                             )
                         }
                     }
-                } else {
-                    Text(
+                } ?: Text(
                         text = "未登录",
                         fontSize = 16.sp,
                         color = Color.White,
@@ -108,7 +111,6 @@ fun MePage(userData: UserData? = null, clickAction: MineClickAction) {
                                 clickAction.loginAction?.invoke()
                             }
                     )
-                }
             }
 
             Row(
@@ -203,6 +205,7 @@ fun MineItem(
             painter = painterResource(id = R.drawable.ic_mine_into),
             contentDescription = null,
             modifier = Modifier
+                .padding(start = 10.dp)
                 .size(20.dp)
         )
     }
@@ -212,7 +215,7 @@ fun MineItem(
 @Preview
 fun ShowMePage() {
     val userData = UserData("benyq", 9527, 18, 1759)
-    MePage(null, MineClickAction())
+    MePage(MutableLiveData(userData), MineClickAction())
 }
 
 @Composable
