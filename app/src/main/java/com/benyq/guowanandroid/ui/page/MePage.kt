@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.benyq.guowanandroid.R
 import com.benyq.guowanandroid.model.UserData
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 data class MineClickAction(
     val loginAction: (() -> Unit)? = null,
@@ -37,6 +38,9 @@ data class MineClickAction(
 
 @Composable
 fun MePage(userData: UserData? = null, clickAction: MineClickAction) {
+
+    val systemUiController = rememberSystemUiController()
+    systemUiController.setStatusBarColor(Color(0xFF36C1BC))
     Column(modifier = Modifier.fillMaxSize()) {
         Box(
             modifier = Modifier
@@ -74,7 +78,7 @@ fun MePage(userData: UserData? = null, clickAction: MineClickAction) {
 
                 if (userData != null) {
                     Column(modifier = Modifier.padding(10.dp)) {
-                        Text(text = userData.name, fontSize = 16.sp, color = Color.White)
+                        Text(text = userData.username, fontSize = 16.sp, color = Color.White)
                         Row() {
                             Text(text = "ID: ${userData.id}", fontSize = 12.sp, color = Color.White)
                             Text(
@@ -117,6 +121,9 @@ fun MePage(userData: UserData? = null, clickAction: MineClickAction) {
                         shape = RoundedCornerShape(topStart = 30.dp, bottomStart = 30.dp)
                     )
                     .padding(top = 5.dp, bottom = 5.dp, start = 10.dp, end = 10.dp)
+                    .clickable {
+                        clickAction.scoreBoardAction?.invoke()
+                    }
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.ic_mine_score),
@@ -171,10 +178,10 @@ fun MineItem(
             .fillMaxWidth()
             .height(45.dp)
             .background(Color.White)
-            .padding(10.dp)
             .clickable {
                 action?.invoke()
-            },
+            }
+            .padding(10.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
