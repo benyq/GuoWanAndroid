@@ -85,19 +85,21 @@ fun MePage(userLiveData: MutableLiveData<UserData>, clickAction: MineClickAction
                         Text(text = it.username, fontSize = 16.sp, color = Color.White)
                         Row() {
                             Text(text = "ID: ${it.id}", fontSize = 12.sp, color = Color.White)
-                            Text(
-                                text = "lv: ${it.level}",
-                                fontSize = 12.sp,
-                                color = Color.White,
-                                modifier = Modifier
-                                    .padding(start = 10.dp)
-                                    .border(
-                                        width = 1.dp,
-                                        color = Color.White,
-                                        shape = RoundedCornerShape(50)
-                                    )
-                                    .padding(start = 10.dp, end = 10.dp)
-                            )
+                            if (it.level > 0) {
+                                Text(
+                                    text = "lv: ${it.level}",
+                                    fontSize = 12.sp,
+                                    color = Color.White,
+                                    modifier = Modifier
+                                        .padding(start = 10.dp)
+                                        .border(
+                                            width = 1.dp,
+                                            color = Color.White,
+                                            shape = RoundedCornerShape(50)
+                                        )
+                                        .padding(start = 10.dp, end = 10.dp)
+                                )
+                            }
                         }
                     }
                 } ?: Text(
@@ -122,10 +124,10 @@ fun MePage(userLiveData: MutableLiveData<UserData>, clickAction: MineClickAction
                         Color(0xFF80D5D1),
                         shape = RoundedCornerShape(topStart = 30.dp, bottomStart = 30.dp)
                     )
-                    .padding(top = 5.dp, bottom = 5.dp, start = 10.dp, end = 10.dp)
                     .clickable {
                         clickAction.scoreBoardAction?.invoke()
                     }
+                    .padding(top = 5.dp, bottom = 5.dp, start = 10.dp, end = 10.dp)
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.ic_mine_score),
@@ -146,11 +148,12 @@ fun MePage(userLiveData: MutableLiveData<UserData>, clickAction: MineClickAction
                 .height(20.dp)
                 .background(Color.White)
         )
-
         MineItem(
             R.drawable.ic_mine1,
             "我的积分",
-            userData?.score?.run { "当前积分: $this" } ?: "",
+            userData?.score?.run {
+                if (this > 0) "当前积分: $this" else ""
+            } ?: "",
             action = clickAction.scoreAction)
         MineItem(R.drawable.ic_mine2, "我的收藏", action = clickAction.collectionAction)
         MineItem(R.drawable.ic_mine3, "我的分享", action = clickAction.shareAction)

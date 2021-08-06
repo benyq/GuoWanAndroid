@@ -3,7 +3,7 @@ package com.benyq.guowanandroid.model
 import java.io.Serializable
 
 
-data class UserData(val username: String, val id: Int, val score: Int? = null, val level: Int? = null)
+data class UserData(val username: String, val id: Int, val score: Int, val level: Int)
 
 data class LoginData(val username: String, val id: Int, val type: Int, val coinCount: Int): Serializable {
     companion object {
