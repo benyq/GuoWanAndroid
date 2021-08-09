@@ -13,38 +13,36 @@ import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import com.benyq.guowanandroid.base.BaseActivity
 import com.benyq.guowanandroid.login.LoginActivity
-import com.benyq.guowanandroid.model.vm.MeViewModel
-import com.benyq.guowanandroid.ui.page.MePage
-import com.benyq.guowanandroid.ui.page.MineClickAction
+import com.benyq.guowanandroid.model.vm.LoginViewModel
+import com.benyq.guowanandroid.ui.page.*
 import com.benyq.guowanandroid.ui.theme.GuoWanAndroidTheme
 import com.orhanobut.logger.Logger
 
-class MainActivity : BaseActivity<MeViewModel>() {
+class MainActivity : BaseActivity<LoginViewModel>() {
+
 
     private lateinit var startLoginLauncher: ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
             GuoWanAndroidTheme {
                 Surface(color = MaterialTheme.colors.background) {
                     Column(modifier = Modifier.fillMaxSize()) {
-                        MePage(viewModel.userData, clickAction = MineClickAction(loginAction = {
-                            startLoginLauncher.launch(Intent(this@MainActivity, LoginActivity::class.java))
-                        }))
+                        HomePage()
                     }
                 }
             }
         }
         createLoginLauncher()
-
-        viewModel.getCoinCount()
     }
 
     private fun createLoginLauncher() {
-        startLoginLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult? ->
-            Logger.d("activity result ${result?.data?.getStringExtra("value") ?: ""}")
-        }
+        startLoginLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult? ->
+                Logger.d("activity result ${result?.data?.getStringExtra("value") ?: ""}")
+            }
     }
 
 

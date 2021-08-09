@@ -1,5 +1,7 @@
 package com.benyq.guowanandroid.model
 
+import com.google.gson.annotations.SerializedName
+
 /**
  * @author benyq
  * @date 2021/8/5
@@ -12,3 +14,14 @@ data class WanResult<T>(val errorCode: Int, val errorMsg: String, val data: T?) 
         }
     }
 }
+
+data class PageData<T>(
+    val curPage: Int,
+    @SerializedName("datas")
+    val data: List<T>,
+    val offset: Int,
+    val pageCount: Int,
+    val size: Int,
+    val total: Int,
+    val over: Boolean,
+)

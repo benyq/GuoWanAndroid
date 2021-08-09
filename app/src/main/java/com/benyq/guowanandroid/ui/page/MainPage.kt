@@ -1,46 +1,68 @@
 package com.benyq.guowanandroid.ui.page
 
-import android.util.Log
-import androidx.compose.foundation.background
+import android.text.TextUtils
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material.Button
+import androidx.compose.material.Card
 import androidx.compose.material.Text
-import androidx.compose.material.TextField
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.benyq.guowanandroid.ui.theme.GrayApp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.rememberImagePainter
+import com.benyq.guowanandroid.model.ArticleData
+import com.benyq.guowanandroid.model.vm.MainViewModel
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 
 @Composable
-fun MainPage() {
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .padding(8.dp)) {
-        var name by remember {
-            mutableStateOf("hello")
-        }
-        TextField(
-            value = name,
-            onValueChange = { name = it },
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(GrayApp, shape = RoundedCornerShape(8.dp)),
-            textStyle = TextStyle(color = Color.Black, fontSize = 20.sp, textAlign = TextAlign.Start)
+fun MainPage(mainViewModel: MainViewModel = viewModel()) {
+
+    val systemUiController = rememberSystemUiController()
+    systemUiController.setStatusBarColor(Color.Black)
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(8.dp)
+    ) {
+
+        Image(modifier = Modifier
+            .fillMaxWidth()
+            .height(150.dp),
+            painter = rememberImagePainter(
+                data = "https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AAN2X5Z.img?h=307&w=514&m=6&q=60&o=f&l=f",
+                builder = {
+
+                }),
+            contentDescription = null,
+            contentScale = ContentScale.FillBounds
         )
-        Button(onClick = {
-            Log.e("MainPage", "MainPage: name $name")
-        }, modifier = Modifier.padding(0.dp, 8.dp)) {
-            Text(text = "确认")
+
+        val articleData by mainViewModel.homeArticleData.observeAsState()
+        LazyColumn(
+            modifier = Modifier
+                .padding(top = 10.dp)
+                .weight(1f)
+        ) {
+            articleData?.run {
+                itemsIndexed(this){ index, article ->
+                    ArticleItem(article = article)
+                    Spacer(modifier = Modifier.padding(top = 5.dp, bottom = 5.dp))
+                }
+            }
         }
     }
+    mainViewModel.getArticleData()
 }
 
 
@@ -50,3 +72,101 @@ fun ShowMainPage() {
     MainPage()
 }
 
+@Composable
+@Preview
+fun ShowArticleItem() {
+    ArticleItem(article = fakeData()[0])
+}
+
+@Composable
+fun ArticleItem(article: ArticleData) {
+    Card(modifier = Modifier.fillMaxWidth(), elevation = 5.dp, shape = RoundedCornerShape(5.dp)) {
+        Column(modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)) {
+            Text(
+                text = article.title,
+                modifier = Modifier.fillMaxWidth(),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                fontSize = 20.sp
+            )
+            Row(modifier = Modifier
+                .padding(top = 5.dp)
+                .fillMaxWidth()) {
+
+                val content = if (TextUtils.isEmpty(article.shareUser)) {
+                    "作者: ${article.author}"
+                }else {
+                    "分享者: ${article.shareUser}"
+                }
+                Text(
+                    text = content,
+                    modifier = Modifier.weight(1f),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    fontSize = 16.sp,
+                    color = Color.Gray
+                )
+                Text(
+                    text = "分类: ${article.chapterName}",
+                    modifier = Modifier.weight(1f),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    fontSize = 16.sp,
+                    color = Color.Gray
+                )
+            }
+            Text(
+                text = "时间: ${article.niceDate}",
+                modifier = Modifier
+                    .padding(top = 5.dp)
+                    .fillMaxWidth(),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                fontSize = 16.sp,
+                color = Color.Gray
+            )
+        }
+    }
+}
+
+fun fakeData(): List<ArticleData> {
+    val article = ArticleData(
+        apkLink="",
+        audit=1,
+        author="张鸿洋",
+        canEdit=false,
+        chapterId=543,
+        chapterName="Android技术周报",
+        collect=false,
+        courseId=13,
+        desc="",
+        descMd="",
+        envelopePic="",
+        fresh=false,
+        host="",
+        id=19132,
+        link="https://www.wanandroid.com/blog/show/3039",
+        niceDate="2021-07-28 00:00",
+        niceShareDate="2021-07-28 00:10",
+        origin="",
+        prefix="",
+        projectLink="",
+        publishTime=1627401600000,
+        realSuperChapterId=542,
+        selfVisible=0,
+        shareDate=1627402200000,
+        shareUser="",
+        superChapterId=543,
+        superChapterName="技术周报",
+        tags= listOf(),
+        title="Android 技术周刊 （2021-07-21 ~ 2021-07-28）",
+        type=0,
+        userId=-1,
+        visible=1,
+        zan=0
+    )
+
+    return listOf(article, article, article, article, article, article, article)
+}
