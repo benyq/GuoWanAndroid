@@ -61,7 +61,7 @@ fun MePage(userLiveData: MutableLiveData<UserData>, clickAction: MineClickAction
                 modifier = Modifier
                     .padding(end = 10.dp)
                     .size(25.dp)
-                    .align(Alignment.TopEnd)
+                    .align(Alignment.TopEnd), tint = Color.White
             )
 
             Row(
@@ -103,16 +103,16 @@ fun MePage(userLiveData: MutableLiveData<UserData>, clickAction: MineClickAction
                         }
                     }
                 } ?: Text(
-                        text = "未登录",
-                        fontSize = 16.sp,
-                        color = Color.White,
-                        modifier = Modifier
-                            .padding(start = 10.dp, bottom = 10.dp)
-                            .align(Alignment.CenterVertically)
-                            .clickable {
-                                clickAction.loginAction?.invoke()
-                            }
-                    )
+                    text = "未登录",
+                    fontSize = 16.sp,
+                    color = Color.White,
+                    modifier = Modifier
+                        .padding(start = 10.dp, bottom = 10.dp)
+                        .align(Alignment.CenterVertically)
+                        .clickable {
+                            clickAction.loginAction?.invoke()
+                        }
+                )
             }
 
             Row(

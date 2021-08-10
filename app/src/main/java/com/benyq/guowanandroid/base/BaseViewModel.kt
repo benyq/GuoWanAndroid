@@ -6,6 +6,7 @@ import com.benyq.guowanandroid.model.WanResult
 import com.benyq.guowanandroid.net.RetrofitFactory
 import com.benyq.guowanandroid.net.WanAndroidApi
 import com.benyq.guowanandroid.tryCatch
+import com.orhanobut.logger.Logger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -29,6 +30,7 @@ open class BaseViewModel : ViewModel() {
             tryCatch({
                 block()
             }, {
+                Logger.e("api error ${it.message}")
                 error?.invoke(it)
             }, {
                 finalBlock?.invoke()

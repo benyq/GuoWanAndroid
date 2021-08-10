@@ -2,6 +2,7 @@ package com.benyq.guowanandroid.ui.page
 
 import android.text.TextUtils
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -10,20 +11,31 @@ import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
+import com.benyq.guowanandroid.R
 import com.benyq.guowanandroid.model.ArticleData
+import com.benyq.guowanandroid.model.UserData
 import com.benyq.guowanandroid.model.vm.MainViewModel
+import com.google.accompanist.pager.*
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.google.android.material.math.MathUtils.lerp
+import kotlin.math.absoluteValue
 
 
+@ExperimentalCoilApi
+@ExperimentalPagerApi
 @Composable
 fun MainPage(mainViewModel: MainViewModel = viewModel()) {
 
@@ -33,27 +45,31 @@ fun MainPage(mainViewModel: MainViewModel = viewModel()) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(8.dp)
+            .padding(horizontal = 8.dp)
     ) {
 
-        Image(modifier = Modifier
-            .fillMaxWidth()
-            .height(150.dp),
-            painter = rememberImagePainter(
-                data = "https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AAN2X5Z.img?h=307&w=514&m=6&q=60&o=f&l=f",
-                builder = {
+        AppTopBar("WanAndroid", functionIcon = R.drawable.ic_search, onFunction = {
 
-                }),
-            contentDescription = null,
-            contentScale = ContentScale.FillBounds
-        )
+        })
 
         val articleData by mainViewModel.homeArticleData.observeAsState()
+        val bannerData by mainViewModel.bannerData.observeAsState()
         LazyColumn(
             modifier = Modifier
-                .padding(top = 10.dp)
+                .padding(top = 0.dp)
                 .weight(1f)
         ) {
+            bannerData?.let { data->
+                item {
+                    Banner(
+                        modifier = Modifier
+                            .padding(top = 5.dp)
+                            .fillMaxWidth()
+                            .height(200.dp), dataList = data
+                    )
+                    Spacer(modifier = Modifier.padding(top = 5.dp, bottom = 5.dp))
+                }
+            }
             articleData?.run {
                 itemsIndexed(this){ index, article ->
                     ArticleItem(article = article)
@@ -62,10 +78,12 @@ fun MainPage(mainViewModel: MainViewModel = viewModel()) {
             }
         }
     }
+    mainViewModel.bannerData()
     mainViewModel.getArticleData()
 }
 
 
+@ExperimentalPagerApi
 @Composable
 @Preview
 fun ShowMainPage() {

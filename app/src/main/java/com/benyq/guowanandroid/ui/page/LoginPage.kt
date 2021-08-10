@@ -52,17 +52,9 @@ fun LoginPage(backAction: ()->Unit, viewModel: LoginViewModel = viewModel()) {
                 modifier = Modifier.padding(bottom = 25.dp)
             )
 
-            var username by remember {
-                mutableStateOf("")
-            }
-
-            var password by remember {
-                mutableStateOf("")
-            }
-
             TextField(
-                value = username,
-                onValueChange = { username = it },
+                value = viewModel.username,
+                onValueChange = { viewModel.username = it },
 
                 modifier = Modifier
                     .fillMaxWidth()
@@ -76,14 +68,14 @@ fun LoginPage(backAction: ()->Unit, viewModel: LoginViewModel = viewModel()) {
                     Text("请输入账号")
                 },
                 trailingIcon = {
-                    if (username.isNotEmpty()) {
+                    if (viewModel.username.isNotEmpty()) {
                         Image(
                             painter = painterResource(id = R.drawable.ic_delete),
                             contentDescription = null,
                             modifier = Modifier
                                 .size(20.dp)
                                 .clickable {
-                                    username = ""
+                                    viewModel.username = ""
                                 }
                         )
                     }
@@ -94,8 +86,8 @@ fun LoginPage(backAction: ()->Unit, viewModel: LoginViewModel = viewModel()) {
                 mutableStateOf(false)
             }
             TextField(
-                value = password,
-                onValueChange = { password = it },
+                value = viewModel.password,
+                onValueChange = { viewModel.password = it },
                 placeholder = {
                     Text("请输入密码")
                 },
@@ -128,7 +120,7 @@ fun LoginPage(backAction: ()->Unit, viewModel: LoginViewModel = viewModel()) {
                 Spacer(modifier = Modifier.weight(1f))
                 Button(
                     onClick = {
-                        viewModel.login(username, password)
+                        viewModel.login()
                     }, modifier = Modifier
                         .padding(top = 30.dp)
                         .weight(3f)

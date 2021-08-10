@@ -15,4 +15,7 @@ interface WanAndroidApi {
 
     @GET("/article/list/{page}/json")
     suspend fun articleList(@Path("page") page: Int): WanResult<PageData<ArticleData>>
+
+    @GET("/banner/json")
+    suspend fun banner():WanResult<List<BannerData>>
 }

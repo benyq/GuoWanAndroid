@@ -1,8 +1,10 @@
 package com.benyq.guowanandroid.model.vm
 
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.benyq.guowanandroid.base.BaseViewModel
 import com.benyq.guowanandroid.model.ArticleData
+import com.benyq.guowanandroid.model.BannerData
 import com.benyq.guowanandroid.model.PageData
 
 /**
@@ -13,6 +15,7 @@ import com.benyq.guowanandroid.model.PageData
  */
 class MainViewModel : BaseViewModel(){
     val homeArticleData = MutableLiveData<List<ArticleData>>()
+    val bannerData = MutableLiveData<List<BannerData>>()
 
     private val page: Int = 1
 
@@ -25,7 +28,27 @@ class MainViewModel : BaseViewModel(){
                 if (it.over) {
                     //全部获取
                 }
-                homeArticleData.value = it.data
+                val oldData = homeArticleData.value
+                if (oldData == null) {
+                    homeArticleData.value = it.data
+                }else {
+                    oldData.toMutableList().addAll(it.data)
+                    homeArticleData.value = oldData.toList()
+                }
+            }
+            onError {
+
+            }
+        }
+    }
+
+    fun bannerData(){
+        quickLaunch<List<BannerData>> {
+            request {
+                apiService.banner()
+            }
+            onSuccess {
+                bannerData.value = it
             }
             onError {
 
